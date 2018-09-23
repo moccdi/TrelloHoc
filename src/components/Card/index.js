@@ -8,6 +8,8 @@ import {
     withHandlers,
     renderComponent,
     mapProps,
+    lifecycle,
+    renameProp,
 } from 'recompose';
 
 
@@ -29,10 +31,18 @@ const withEditing = compose(
     mapProps(({onChange:onChangeCardInfo, ...props}) => ({
         ...props,
         onChangeCardInfo})),
-    withState('text','onChange',props => props.text),
+    //renameProp('text','outerText'),
+    withState('text','onChange',props => props.text), //вызывает только один раз
+    lifecycle({
+        componentWillReceiveProps(nexProps){
+            if(nexProps.text !== this.props.text){
+                nexProps.onChange(nexProps.text);
+            }
+        }
+    }),
     withHandlers({
         onSave:({id, text,onChangeCardInfo,setEditingMode}) => () => {
-          onChangeCardInfo({ id,text});
+            onChangeCardInfo({ id,text});
             setEditingMode(false);
         },
     }),
@@ -41,6 +51,39 @@ const withEditing = compose(
 );
 
 export default compose(withShowingEditOnHover, withEditing)(Card);
+
+
+
+// const withHoverHandling = Component => ({ setShowEditButton, ...props }) => (
+//     <div
+//         onMouseEnter={() => setShowEditButton(true)}
+//         onMouseLeave={() => setShowEditButton(false)}
+//     >
+//         <Component {...props} />
+//     </div>
+// );
+//
+// const withShowingEditOnHover = compose(
+//     withState('showEditButton', 'setShowEditButton', false),
+//     withHoverHandling
+// );
+// const withEditing = compose(
+//     withState('isEditing','setEditingMode',false),
+//     mapProps(({onChange:onChangeCardInfo, ...props}) => ({
+//         ...props,
+//         onChangeCardInfo})),
+//     withState('text','onChange',props => props.text), //вызывает только один раз
+//     withHandlers({
+//         onSave:({id, text,onChangeCardInfo,setEditingMode}) => () => {
+//           onChangeCardInfo({ id,text});
+//             setEditingMode(false);
+//         },
+//     }),
+//     branch(({ isEditing }) => isEditing , renderComponent(CardEditor)),
+//     mapProps(({ isEditing,...props}) => props),
+// );
+//
+// export default compose(withShowingEditOnHover, withEditing)(Card);
 
 // const withEditing = compose(
 //     withState('isEditing','onEdit',false),

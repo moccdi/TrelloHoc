@@ -1,8 +1,10 @@
-import {withProps} from 'recompose';
-import sections from "../../stubs/sections";
-import App from "./App";
+import { withState, compose } from 'recompose';
 
+import sections from '../../stubs/sections';
+import App from './App';
+import withLocalStorage from '../../hocs/withLocalStorage';
 
-export default withProps({
-    sections
-    })(App);
+export default compose(
+    withState('sections', 'setSections', sections),
+    withLocalStorage([['sections', 'setSections']]) // withLocalStorage заходит только withState 'sections' - name, 'setSections' - methodName;
+)(App);

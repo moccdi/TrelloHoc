@@ -1,17 +1,16 @@
 import React from "react";
-import Desk from "../Desk";
-import logo from '../assets/images/logo.svg'
-import sections from "../../stubs/sections";
-import './style.css'
 
-const App = ({sections}) => (
+import './style.css';
+
+import Desk from '../Desk';
+
+const App = ({ sections, setSections }) => (
     <div className="app">
         <header>
-            <h2>
-                JavaScript Ninja Desk
-            </h2>
+            <h2>JavaScript Ninja Desk</h2>
         </header>
-        <Desk sections={sections}/>
+        <Desk onChange={setSections} sections={sections} />
     </div>
-)
+);
+
 export default App;
